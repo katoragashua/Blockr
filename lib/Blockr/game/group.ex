@@ -1,4 +1,6 @@
-defmodule Group do
+defmodule Blockr.Game.Group do
+  alias Blockr.Game.{Point, Color}
+
   def move_down(points) do
     points |> Enum.map(&Point.move_down/1)
   end
@@ -9,6 +11,10 @@ defmodule Group do
 
   def move_right(points) do
     points |> Enum.map(&Point.move_right/1)
+  end
+
+  def move_to(points, location) do
+    points |> Enum.map(&Point.move_to(&1, location))
   end
 
   def swap(points) do
@@ -26,5 +32,10 @@ defmodule Group do
   def rotate(points, degree) do
     points
     |> Enum.map(fn point -> Point.rotate(point, degree) end)
+  end
+
+  def paint(points, name) do
+    points
+    |> Enum.map(&Point.paint(&1, apply(Color, name, [])))
   end
 end
