@@ -60,7 +60,9 @@ defmodule Blockr.Game.Board do
     # junkyard = Enum.reduce(to_junkyard, board.junkyard, fn x, acc -> [x | acc] end)
     junkyard = to_junkyard ++ board.junkyard
     IO.inspect(junkyard, label: "Junkyard after adding tetromino")
+
     %{board | junkyard: junkyard, points: new_points}
+    |> compute_score()
   end
 
   def count_complete_rows(board = %__MODULE__{}) do
@@ -69,5 +71,28 @@ defmodule Blockr.Game.Board do
     |> Enum.group_by(fn {row, _col} -> row end)
     |> Map.values()
     |> Enum.count(&(length(&1) == 10))
+  end
+
+  def compute_score(board = %__MODULE__{}) do
+    num_rows = count_complete_rows(board)
+
+    # score =
+    #   cond do
+    #     num_rows == 0 ->
+    #       0
+
+    #     true ->
+    #       :math.pow(2, num_rows)
+    #       |> round()
+    #       |> Kernel.*(50)
+    #   end
+
+    score =
+      case num_rows do
+        0 -> 0
+        _ -> :math.pow(2, num_rows) |> round() |> Kernel.*(50)
+      end
+
+    %{board | score: board.score + score}
   end
 end
